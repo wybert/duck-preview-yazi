@@ -476,10 +476,17 @@ function M:peek(job)
     local file = job.file
     local area = job.area
     
+    -- Debug logging
+    ya.dbg("duck-preview: Plugin called for file:", file.name)
+    ya.dbg("duck-preview: File extension check...")
+    
     -- Check if file is supported
     if not is_supported_file(file) then
+        ya.dbg("duck-preview: File not supported:", file.name)
         return
     end
+    
+    ya.dbg("duck-preview: File supported, proceeding...")
     
     -- Check if DuckDB is available (cache the result)
     if duckdb_available == nil then
