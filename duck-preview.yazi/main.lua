@@ -47,7 +47,7 @@ local duckdb = {}
 
 -- Check if DuckDB is available on the system
 function duckdb.check_availability()
-    local child, err = Command("duckdb"):args({"--version"}):stdout(Command.PIPED):spawn()
+    local child, err = Command("duckdb"):arg({"--version"}):stdout(Command.PIPED):spawn()
     if not child then
         return false
     end
@@ -70,7 +70,7 @@ function duckdb.query_file(file_path, options)
     
     -- Execute DuckDB command
     local child, err = Command("duckdb")
-        :args({"-json", "-cmd", query})
+        :arg({"-json", "-cmd", query})
         :stdout(Command.PIPED)
         :stderr(Command.PIPED)
         :spawn()
