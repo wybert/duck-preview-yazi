@@ -87,7 +87,7 @@ Add the plugin to your Yazi configuration file (`~/.config/yazi/yazi.toml`):
 [plugin]
 prepend_previewers = [
     # DuckDB table data preview
-    { name = "*.csv", run = "duck-preview" },
+    { mime = "text/csv", run = "duck-preview" },
     { name = "*.csv.gz", run = "duck-preview" },
     { name = "*.csv.bz2", run = "duck-preview" },
     { name = "*.tsv", run = "duck-preview" },
