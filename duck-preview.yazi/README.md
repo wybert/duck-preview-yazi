@@ -81,7 +81,34 @@ git clone https://github.com/wybert/duck-preview.yazi ~/.config/yazi/plugins/duc
 
 ## Configuration
 
-Add the plugin to your Yazi configuration file (`~/.config/yazi/yazi.toml`):
+Add the plugin to your Yazi configuration file (`~/.config/yazi/yazi.toml`).
+
+**Option 1: Modify the main previewers section (recommended)**
+
+Add CSV support before the generic `text/*` rule in the main `previewers` section:
+
+```toml
+previewers = [
+    { name = "*/", run = "folder", sync = true },
+    # CSV files - DuckDB preview
+    { mime = "text/csv", run = "duck-preview" },
+    # Code (this must come AFTER CSV rule)
+    { mime = "text/*", run = "code" },
+    # ... rest of your previewers
+]
+
+[plugin]
+prepend_previewers = [
+    # DuckDB table data preview for compressed files
+    { name = "*.csv.gz", run = "duck-preview" },
+    { name = "*.csv.bz2", run = "duck-preview" },
+    { name = "*.tsv", run = "duck-preview" },
+    { name = "*.tsv.gz", run = "duck-preview" },
+    { name = "*.parquet", run = "duck-preview" },
+]
+```
+
+**Option 2: Override in prepend_previewers (alternative)**
 
 ```toml
 [plugin]
@@ -94,6 +121,9 @@ prepend_previewers = [
     { name = "*.tsv.gz", run = "duck-preview" },
     { name = "*.parquet", run = "duck-preview" },
 ]
+```
+
+**Important:** CSV files have mime type `text/csv` which is normally handled by the generic `text/*` rule for code preview. You need to add the CSV rule **before** the `text/*` rule for it to take precedence.
 
 # Plugin configuration
 [plugin.duck-preview]
