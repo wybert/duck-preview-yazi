@@ -52,8 +52,8 @@ function duckdb.check_availability()
         return false
     end
     
-    local success = child:wait()
-    return success and success.status.success
+    local output = child:wait_with_output()
+    return output and output.status and output.status.success
 end
 
 -- Execute DuckDB query and return parsed results
