@@ -90,8 +90,9 @@ Add CSV support before the generic `text/*` rule in the main `previewers` sectio
 ```toml
 previewers = [
     { name = "*/", run = "folder", sync = true },
-    # CSV files - DuckDB preview
+    # DuckDB table files
     { mime = "text/csv", run = "duck-preview" },
+    { name = "*.parquet", run = "duck-preview" },
     # Code (this must come AFTER CSV rule)
     { mime = "text/*", run = "code" },
     # ... rest of your previewers
