@@ -53,7 +53,7 @@ function duckdb.check_availability()
     end
     
     local success = child:wait()
-    return success and success.success
+    return success and success.status.success
 end
 
 -- Execute DuckDB query and return parsed results
@@ -81,7 +81,7 @@ function duckdb.query_file(file_path, options)
     
     local output, err_output = child:wait_with_output()
     
-    if not output or not output.success then
+    if not output or not output.status.success then
         local error_msg = err_output and err_output.stderr or "Unknown DuckDB error"
         error("DuckDB query failed: " .. error_msg)
     end
