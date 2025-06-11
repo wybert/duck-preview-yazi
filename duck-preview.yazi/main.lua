@@ -476,36 +476,23 @@ function M:peek(job)
     local file = job.file
     local area = job.area
     
-    -- Debug logging for parquet files
-    if file.name:lower():match("%.parquet$") then
-        ya.dbg("duck-preview: Parquet file detected:", file.name)
-    end
-    
     -- Check if file is supported
     if not is_supported_file(file) then
-        ya.dbg("duck-preview: File not supported:", file.name)
         return
     end
     
-    ya.dbg("duck-preview: Processing supported file:", file.name)
-    
     -- Check if DuckDB is available (cache the result)
     if duckdb_available == nil then
-        ya.dbg("duck-preview: Checking DuckDB availability...")
         duckdb_available = duckdb.check_availability()
-        ya.dbg("duck-preview: DuckDB available:", duckdb_available)
     end
     
     if not duckdb_available then
-        ya.dbg("duck-preview: DuckDB not available, showing error message")
         ya.preview_widget(job, {
             ui.Text("DuckDB not found. Please install DuckDB to preview table data.")
                 :fg("yellow")
         })
         return
     end
-    
-    ya.dbg("duck-preview: DuckDB is available, proceeding with query")
     
     local file_path = tostring(file.url)
     
@@ -520,16 +507,13 @@ function M:peek(job)
     local user_config = config.get_user_config()
     
     -- Query the file with DuckDB
-    ya.dbg("duck-preview: Running DuckDB query on:", file_path)
     local success, result = pcall(function()
         return duckdb.query_file(file_path, {
             limit = user_config.max_rows
         })
     end)
     
-    ya.dbg("duck-preview: Query success:", success)
     if not success then
-        ya.dbg("duck-preview: Query failed with error:", result)
         -- Fall back to error message
         ya.preview_widget(job, {
             ui.Text("Error reading file: " .. (result or "Unknown error"))
@@ -538,12 +522,8 @@ function M:peek(job)
         return
     end
     
-    ya.dbg("duck-preview: Query successful, formatting table...")
-    ya.dbg("duck-preview: Result has", result and #result.rows or 0, "rows")
-    
     -- Format the data for display
     local widgets = formatter.format_table(result, area, user_config)
-    ya.dbg("duck-preview: Created", #widgets, "widgets for display")
     
     -- Cache the result (simple cache with size limit)
     if #cache_data > 50 then
@@ -561,9 +541,7 @@ function M:peek(job)
     }
     
     -- Display the preview
-    ya.dbg("duck-preview: Calling ya.preview_widget with", #widgets, "widgets")
     ya.preview_widget(job, widgets)
-    ya.dbg("duck-preview: preview_widget call completed")
 end
 
 return M
