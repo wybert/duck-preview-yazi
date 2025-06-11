@@ -476,10 +476,18 @@ function M:peek(job)
     local file = job.file
     local area = job.area
     
+    -- Debug logging for parquet files
+    if file.name:lower():match("%.parquet$") then
+        ya.dbg("duck-preview: Parquet file detected:", file.name)
+    end
+    
     -- Check if file is supported
     if not is_supported_file(file) then
+        ya.dbg("duck-preview: File not supported:", file.name)
         return
     end
+    
+    ya.dbg("duck-preview: Processing supported file:", file.name)
     
     -- Check if DuckDB is available (cache the result)
     if duckdb_available == nil then
