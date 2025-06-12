@@ -476,17 +476,26 @@ function M:peek(job)
     local file = job.file
     local area = job.area
     
+    -- Debug logging
+    ya.err("Duck-preview: peek() called for file: " .. tostring(file.url))
+    
     -- Check if file is supported
     if not is_supported_file(file) then
+        ya.err("Duck-preview: File not supported: " .. tostring(file.url))
         return
     end
     
+    ya.err("Duck-preview: File is supported, proceeding with preview")
+    
     -- Check if DuckDB is available (cache the result)
     if duckdb_available == nil then
+        ya.err("Duck-preview: Checking DuckDB availability")
         duckdb_available = duckdb.check_availability()
+        ya.err("Duck-preview: DuckDB available: " .. tostring(duckdb_available))
     end
     
     if not duckdb_available then
+        ya.err("Duck-preview: DuckDB not available, showing error message")
         ya.preview_widget(job, {
             ui.Text("DuckDB not found. Please install DuckDB to preview table data.")
                 :fg("yellow")
